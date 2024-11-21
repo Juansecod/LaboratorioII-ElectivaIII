@@ -1,0 +1,39 @@
+{% extends "base_layout.html" %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Project Leads</h1>
+        <a href="{% url "create_project_lead" %}">
+            <button class="btn btn-success">
+                <i class="fa-solid fa-plus"></i>
+                Create
+            </button>
+        </a>
+    </div>
+    {% if project_leads %}
+        <table class="table">
+            <thead>
+            <tr class="table-dark">
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for project_lead in project_leads %}
+                    <tr>
+                        <th scope="row">{{project_lead.id}}</th>
+                        <td>{{project_lead.name}}</td>
+                        <td>{{project_lead.email}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+    <div class="p-5 text-center d-flex flex-column">
+        <i class="fa-solid fa-person-circle-exclamation fs-1"></i>
+        Oops, you don't have any project leads yet.
+    </div>
+    {% endif %}
+
+{% endblock%}

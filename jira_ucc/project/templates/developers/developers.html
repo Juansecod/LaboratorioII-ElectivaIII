@@ -1,0 +1,39 @@
+{% extends "base_layout.html" %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Developers</h1>
+        <a href="{% url "create_developer" %}">
+            <button class="btn btn-success">
+                <i class="fa-solid fa-plus"></i>
+                Create
+            </button>
+        </a>
+    </div>
+    {% if developers %}
+        <table class="table">
+            <thead>
+            <tr class="table-dark">
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for developer in developers %}
+                    <tr>
+                        <th scope="row">{{developer.id}}</th>
+                        <td>{{developer.name}}</td>
+                        <td>{{developer.email}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+    <div class="p-5 text-center d-flex flex-column">
+        <i class="fa-solid fa-laptop-code fs-1"></i>
+        Oops, you don't have any developers yet.
+    </div>
+    {% endif %}
+
+{% endblock%}

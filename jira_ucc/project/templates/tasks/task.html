@@ -1,0 +1,125 @@
+{% extends "base_layout.html" %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="text-primary">{{task.title}}</h1>
+        <a href="{% url "team" id_team %}">
+            <button class="btn btn-primary">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back
+            </button>
+        </a>
+    </div>
+    <div class="container">
+        <h3 class="mb-2 text-muted"><i class="fa-solid fa-laptop-code"></i> Developer: {{task.owner.name}}</h6>
+        <h4 class="text-info">Deadline: {{task.deadline}}</h4>
+        <div>
+            <h4>Descripton:</h4>
+            <p>{{task.description}}</p>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="
+                px-3
+                py-1
+                text-white
+                rounded-pill
+                fw-bold
+                {% if task.status == "To Do" %}
+                    bg-secondary
+                {%endif%}
+                {% if task.status == "In Progress" %}
+                    bg-primary
+                {%endif%}
+                {% if task.status == "Finished" %}
+                    bg-success
+                {%endif%}
+            ">
+                {{ task.status }}
+            </span>
+            
+            <span class="
+                px-3
+                py-1
+                text-white
+                rounded-pill
+                fw-bold
+                {% if task.priority == "H" %}
+                    bg-danger
+                {%endif%}
+                {% if task.priority == "M" %}
+                    bg-warning
+                {%endif%}
+                {% if task.priority == "L" %}
+                    bg-success
+                {%endif%}
+            ">
+                {{ task.get_priority_display }}
+            </span>
+
+            {% if request.session.user.rol == "PM" and task.is_dissabled%}
+                <span class="
+                    ms-2
+                    px-3
+                    py-1
+                    text-white
+                    rounded-pill
+                    fw-bold
+                    bg-secondary
+                ">
+                    Dissabled
+                </span>
+            {% endif %}
+        </div>
+        <div class="d-flex justify-content-end gap-2">
+            {% if request.session.user.rol == "PM" %}
+            {% if task.is_dissabled != True %}
+                <a href="{% url "delete_task" id_team task.id %}">
+                    <button class="btn btn-danger">
+                        <i class="fa-solid fa-trash"></i>
+                        Delete
+                    </button>
+                </a>
+            {% else %}
+                <a href="{% url "activate_task" id_team task.id %}">
+                    <button class="btn btn-success">
+                        Activate
+                    </button>
+                </a>
+            {% endif %}
+        {% endif %}
+        {% if request.session.user.rol == "D" %}
+            <a href="{% url "create_comment" id_team task.id %}">
+                <button class="btn btn-secondary">Comment</button>
+            </a>
+            <a>
+                <button class="btn btn-primary">Start</button>
+            </a>
+        {% endif %}
+        </div>
+    </div>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Comments</h2>
+        </div>
+        {% if observations %}
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                {% for observation in observations %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                Written by: {{observation.created_by.name}}
+                            </h5>
+                            <i class="card-subtitle text-muted">{{observation.comment}}</i>
+                            <p class="fs-6">{{observation.created_at}}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="p-5 text-center d-flex flex-column">
+                <i class="fa-solid fa-comments fs-1"></i>
+                Oops, the task don't have any comments yet.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

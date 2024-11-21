@@ -1,0 +1,38 @@
+{% extends "base_layout.html" %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Teams</h1>
+        {% if request.session.user.rol == "PM" %}
+            <a href="{% url "create_team" %}">
+                <button class="btn btn-success">
+                    <i class="fa-solid fa-plus"></i>
+                    Create
+                </button>
+            </a>
+        {% endif %}
+    </div>
+    {% if teams %}
+    <div class="d-flex justify-content-center p-2 flex-wrap gap-3">
+        {% for team in teams %}
+        <div class="card text-center bg-dark text-light" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">Team #{{team.id}}</h5>
+                <h6 class="card-subtitle mb-2 text-white-50">Project Manager: <span class="text-light">{{team.project_manager.name}}</span></h6>
+                <a href="{% url "team" team.id %}">
+                    <button class="btn btn-secondary">
+                        View More
+                    </button>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="p-5 text-center d-flex flex-column">
+        <i class="fa-solid fa-people-group fs-1"></i>
+        Oops, you don't have any teams yet.
+    </div>
+    {% endif %}
+
+{% endblock%}

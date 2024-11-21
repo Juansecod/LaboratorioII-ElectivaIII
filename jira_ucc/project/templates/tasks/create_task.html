@@ -1,0 +1,51 @@
+{% extends "base_layout.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center">
+    <h1>Create Task</h1>
+    <a href="{% url "team" team.id %}">
+        <button class="btn btn-primary">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back
+        </button>
+    </a>
+</div>
+<form method="POST" class="container" action="{% url "create_task" team.id%}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="title" class="form-label">Title:</label>
+        <input type="text" class="form-control" id="title" name="title">
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description:</label>
+        <input type="text" class="form-control" id="description" name="description">
+    </div>
+    <div class="mb-3">
+        <label for="deadline" class="form-label">Deadline:</label>
+        <input type="date" class="form-control" id="deadline" name="deadline">
+    </div>
+    <div class="mb-3">
+        <label for="priority" class="form-label">Priority:</label>
+        <select name="priority" id="priority" class="form-control">
+            <option value="L">Lower</option>
+            <option value="M">Medium</option>
+            <option value="H">Higher</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="developer" class="form-label">Select a developer to assign the task:</label>
+        <select name="developer" id="developer" required class="form-control">
+            {% for developer in developers %}
+                <option value={{ developer.id }}>{{ developer.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="d-flex justify-content-end pe-4">
+        <button type="submit" class="btn btn-success">
+            <i class="fa-solid fa-list-check"></i>
+            Create
+        </button>
+    <div>
+</form>
+{% endblock %}

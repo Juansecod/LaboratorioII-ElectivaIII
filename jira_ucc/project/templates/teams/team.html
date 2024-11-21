@@ -1,0 +1,277 @@
+{% extends "base_layout.html" %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>{{title}}</h1>
+        {% if request.session.user.rol == "PM" %}
+            <a href="{% url "create_task" team.id%}">
+                <button class="btn btn-success">
+                    <i class="fa-solid fa-plus"></i>
+                    Create New Task
+                </button>
+            </a>
+        {% endif %}
+    </div>
+    <div class="container">
+        <h4 class="text-danger">
+            <i class="fa-solid fa-user-tie"></i>
+            Project Lead: <span class="text-dark">{{team.project_manager.name}}</span>
+        </h4>
+        <h6>
+            <h4 class="d-inline-block"><i class="fa-solid fa-envelope"></i></h4>
+            Email: <a href="mailto://{{team.project_manager.email}}">{{team.project_manager.email}}</a>
+        <h6>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Developers</h2>
+    </div>
+    {% if developers %}
+        <table class="table">
+            <thead>
+            <tr class="table-dark">
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for developer in developers %}
+                    <tr>
+                        <th scope="row">{{developer.id}}</th>
+                        <td>{{developer.name}}</td>
+                        <td><a href="mailto://{{developer.email}}">{{developer.email}}</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+    <div class="p-5 text-center d-flex flex-column">
+        <i class="fa-solid fa-laptop-code fs-1"></i>
+        Oops, you don't have any developers yet.
+    </div>
+    {% endif %}
+    <div class="container">
+        <div class="row">
+          <div class="col">
+            <h4 class="text-secondary">To Do</h4>
+            {% for task in tasks %}
+                {% if task.status == "To Do"%}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url "task" team.id task.id%}" class>{{task.title}}</a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{task.owner.name}}</h6>
+                            <p class="card-text">{{task.description}}</p>
+                            <h6>Deadline: {{task.deadline}}</h6>
+                            <span class="
+                                px-3
+                                py-1
+                                text-white
+                                rounded-pill
+                                fw-bold
+                                {% if task.priority == "H" %}
+                                    bg-danger
+                                {%endif%}
+                                {% if task.priority == "M" %}
+                                    bg-warning
+                                {%endif%}
+                                {% if task.priority == "L" %}
+                                    bg-success
+                                {%endif%}
+                            ">
+                                {{ task.get_priority_display }}
+                            </span>
+                            {% if request.session.user.rol == "PM" and task.is_dissabled%}
+                                <span class="
+                                    ms-2
+                                    px-3
+                                    py-1
+                                    text-white
+                                    rounded-pill
+                                    fw-bold
+                                    bg-secondary
+                                ">
+                                    Dissabled
+                                </span>
+                            {% endif %}
+                            <div class="d-flex justify-content-end gap-2">
+                            {% if request.session.user.rol == "PM" %}
+                                {% if task.is_dissabled != True %}
+                                    <a href="{% url "delete_task" team.id task.id %}">
+                                        <button class="btn btn-danger">
+                                            <i class="fa-solid fa-trash"></i>
+                                            Delete
+                                        </button>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url "activate_task" team.id task.id %}">
+                                        <button class="btn btn-success">
+                                            Activate
+                                        </button>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                            {% if request.session.user.rol == "D" %}
+                                <a href="{% url "create_comment" team.id task.id %}">
+                                    <button class="btn btn-secondary">Comment</button>
+                                </a>
+                                <a href="{% url "change_status_task" team.id task.id "In Progress" %}">
+                                    <button class="btn btn-primary">Start</button>
+                                </a>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+          </div>
+          <div class="col">
+            <h4 class="text-primary">In Progress</h4>
+            {% for task in tasks %}
+                {% if task.status == "In Progress"%}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url "task" team.id task.id%}" class>{{task.title}}</a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{task.owner.name}}</h6>
+                            <p class="card-text">{{task.description}}</p>
+                            <h6>Deadline: {{task.deadline}}</h6>
+                            <span class="
+                                px-3
+                                py-1
+                                text-white
+                                rounded-pill
+                                fw-bold
+                                {% if task.priority == "H" %}
+                                    bg-danger
+                                {%endif%}
+                                {% if task.priority == "M" %}
+                                    bg-warning
+                                {%endif%}
+                                {% if task.priority == "L" %}
+                                    bg-success
+                                {%endif%}
+                            ">
+                                {{ task.get_priority_display }}
+                            </span>
+                            {% if request.session.user.rol == "PM" and task.is_dissabled %}
+                                <span class="
+                                    ms-2
+                                    px-3
+                                    py-1
+                                    text-white
+                                    rounded-pill
+                                    fw-bold
+                                    bg-secondary
+                                ">
+                                    Dissabled
+                                </span>
+                            {% endif %}
+                            <div class="d-flex justify-content-end gap-2">
+                                {% if request.session.user.rol == "PM" %}
+                                {% if task.is_dissabled != True %}
+                                    <a href="{% url "delete_task" team.id task.id %}">
+                                        <button class="btn btn-danger">
+                                            <i class="fa-solid fa-trash"></i>
+                                            Delete
+                                        </button>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url "activate_task" team.id task.id %}">
+                                        <button class="btn btn-success">
+                                            Activate
+                                        </button>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                            {% if request.session.user.rol == "D" %}
+                                <a href="{% url "create_comment" team.id task.id %}">
+                                    <button class="btn btn-secondary">Comment</button>
+                                </a>
+                                <a href="{% url "change_status_task" team.id task.id "Finished" %}">
+                                    <button class="btn btn-success">Finished</button>
+                                </a>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+          </div>
+          <div class="col">
+            <h4 class="text-success">Finished</h4>
+            {% for task in tasks %}
+                {% if task.status == "Finished"%}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url "task" team.id task.id%}" class>{{task.title}}</a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{task.owner.name}}</h6>
+                            <p class="card-text">{{task.description}}</p>
+                            <h6>Deadline: {{task.deadline}}</h6>
+                            <span class="
+                                px-3
+                                py-1
+                                text-white
+                                rounded-pill
+                                fw-bold
+                                {% if task.priority == "H" %}
+                                    bg-danger
+                                {%endif%}
+                                {% if task.priority == "M" %}
+                                    bg-warning
+                                {%endif%}
+                                {% if task.priority == "L" %}
+                                    bg-success
+                                {%endif%}
+                            ">
+                                {{ task.get_priority_display }}
+                            </span>
+                            {% if request.session.user.rol == "PM" and task.is_dissabled%}
+                                <span class="
+                                    ms-2
+                                    px-3
+                                    py-1
+                                    text-white
+                                    rounded-pill
+                                    fw-bold
+                                    bg-secondary
+                                ">
+                                    Dissabled
+                                </span>
+                            {% endif %}
+                            <div class="d-flex justify-content-end gap-2">
+                                {% if request.session.user.rol == "PM" %}
+                                {% if task.is_dissabled != True %}
+                                    <a href="{% url "delete_task" team.id task.id %}">
+                                        <button class="btn btn-danger">
+                                            <i class="fa-solid fa-trash"></i>
+                                            Delete
+                                        </button>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url "activate_task" team.id task.id %}">
+                                        <button class="btn btn-success">
+                                            Activate
+                                        </button>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                            {% if request.session.user.rol == "D" %}
+                                <a href="{% url "create_comment" team.id task.id %}">
+                                    <button class="btn btn-secondary">Comment</button>
+                                </a>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+{% endblock %}
