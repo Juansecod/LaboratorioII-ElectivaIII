@@ -91,9 +91,15 @@
             <a href="{% url "create_comment" id_team task.id %}">
                 <button class="btn btn-secondary">Comment</button>
             </a>
+            {% if  task.status == "To Do"%}
             <a>
                 <button class="btn btn-primary">Start</button>
             </a>
+            {% elif task.status == "In Progress" %}
+            <a>
+                <button class="btn btn-success">Finished</button>
+            </a>
+            {% endif %}
         {% endif %}
         </div>
     </div>
