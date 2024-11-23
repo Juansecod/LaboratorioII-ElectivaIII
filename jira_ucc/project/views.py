@@ -266,7 +266,7 @@ def create_task(request, id_team):
         priority = request.POST['priority']
         owner_id = request.POST['developer']
         
-        owner = User.objects.get(pk=owner_id)
+        owner = User.objects.get(pk=owner_id) if owner_id != "None" else None
         
         new_task = Task(
             title = title,

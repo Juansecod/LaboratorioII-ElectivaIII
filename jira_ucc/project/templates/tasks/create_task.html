@@ -36,6 +36,8 @@
     <div class="mb-3">
         <label for="developer" class="form-label">Select a developer to assign the task:</label>
         <select name="developer" id="developer" required class="form-control">
+            <option selected disabled>Select a developer</option>
+            <option value="None">Ninguno</option>
             {% for developer in developers %}
                 <option value={{ developer.id }}>{{ developer.name }}</option>
             {% endfor %}

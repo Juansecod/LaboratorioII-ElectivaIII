@@ -25,7 +25,7 @@ class Task(models.Model):
     is_dissabled = models.BooleanField(default = False)
     status = models.CharField(max_length=10, default = "To Do")
     team = models.ForeignKey(Team, on_delete = models.PROTECT)
-    owner = models.ForeignKey(User, on_delete = models.PROTECT)
+    owner = models.ForeignKey(User, on_delete = models.PROTECT, null=True, blank=True)
     
     TYPES_PRIORITY = (
         ("L", "Lower"),
